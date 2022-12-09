@@ -15,11 +15,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Evolutions />} />
           <Route path="/pokedex" element={<Pokedex />} />
-          <Route path="/evocards" element={<Evolutions />} />
+          <Route path="/evolutions" element={<Evolutions />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-      <Footer />
     </div>
   );
 };
