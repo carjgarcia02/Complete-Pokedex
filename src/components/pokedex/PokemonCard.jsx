@@ -61,13 +61,15 @@ const PokemonCard = ({ id, name, image, typesArray }) => {
       {/* Pokemon Types */}
       <div className="w-full flex justify-center text-[7px] sm:text-[10px] md:text-xs gap-3 absolute bottom-4">
         <div
-          className="px-2 py-1"
+          className="px-2 py-1 border-2 border-white"
           style={{ backgroundColor: colors[`${typesArray[0]}`] }}
         >
           {typesArray[0]}
         </div>
         <div
-          className={typesArray.length > 1 ? "px-2 py-1" : "hidden"}
+          className={
+            typesArray.length > 1 ? "px-2 py-1 border-2 border-white" : "hidden"
+          }
           style={{ backgroundColor: colors[`${typesArray[1]}`] }}
         >
           {typesArray[1]}

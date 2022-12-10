@@ -4,21 +4,20 @@ import Filters from "./Filters";
 import PokemonCard from "./PokemonCard";
 //Hooks
 import { useState, useEffect } from "react";
+//Icons
+import { BiSearch } from "react-icons/bi";
 
 const Pokedex = () => {
-  const [Pokemons, setPokemons] = useState([]);
-  const [AllPokemons, setAllPokemons] = useState([]);
+  const [pokemons, setPokemons] = useState([]);
+  const [allPokemons, setAllPokemons] = useState([]);
   const [offset, setOffset] = useState(0);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     searchPokemons();
   }, []);
 
-  /* useEffect(() => {
-    searchAllPokemons();
-  }, [offset]); */
-
-  const searchPokemons = async (limit = 1050) => {
+  const searchPokemons = async (limit = 500) => {
     const initialURL = "https://pokeapi.co/api/v2/";
     const response = await fetch(
       `${initialURL}pokemon/?offset=${offset}&limit=${limit}`
@@ -37,16 +36,46 @@ const Pokedex = () => {
     const searchResults = await Promise.all(promises);
     console.log(searchResults);
     setPokemons(searchResults);
+    setAllPokemons(searchResults);
+  };
+
+  /* Searchbar functions*/
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+    console.log(e.target.value);
+    filterPokemon(e.target.value);
+  };
+
+  const filterPokemon = (searchTerm) => {
+    let foundPkmn = allPokemons.filter((pokemon) => {
+      if (
+        pokemon.id.toString() === searchTerm ||
+        pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return pokemon;
+      }
+    });
+    setPokemons(foundPkmn);
   };
 
   return (
-    <div className="w-full h-screen font-Patrick">
+    <div className="w-full h-screen px-2 py-8 font-Patrick">
       {/* Pokédex header */}
       <header className="flex w- justify-between">
         <h1>Pokédex</h1>
         {/* Pokémon searchbar */}
-        <div>
-          <input type="text" placeholder="Find a Pokémon by its name or id" />
+        <div className="mr-8">
+          <div className="flex justify-center items-center">
+            <input
+              className="border-2 text-lg px-2 py-1 rounded-lg focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+              value={search}
+              placeholder="Find Pokémon by name or id"
+              onChange={handleChange}
+            />
+            <button className="bg-green-500 hover:bg-green-600 text-white text-2xl px-2 py-2  rounded-md clic">
+              <BiSearch />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -56,7 +85,7 @@ const Pokedex = () => {
         <section>Filter bar</section>
         {/* Search Results */}
         <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 justify-items-end p-6">
-          {Pokemons.map((pkmn) =>
+          {pokemons.map((pkmn) =>
             pkmn.types.length > 1 ? (
               <PokemonCard
                 key={`pkmn-${pkmn.name}`}
