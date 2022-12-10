@@ -13,7 +13,7 @@ const App = () => {
       <Navigation />
       <main className="flex">
         <Routes>
-          <Route path="/" element={<Evolutions />} />
+          <Route path="/" element={<Pokedex />} />
           <Route path="/pokedex" element={<Pokedex />} />
           <Route path="/evolutions" element={<Evolutions />} />
           <Route path="*" element={<Navigate to="/" />} />

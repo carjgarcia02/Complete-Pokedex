@@ -12,17 +12,17 @@ import { RxThickArrowRight } from "react-icons/rx";
 import { useEffect, useState } from "react";
 
 const Evolutions = () => {
-  const [pokemonId, setPokemonId] = useState(1);
+  const [evoChainId, setEvoChainId] = useState(1);
   const [evoResults, setEvoResults] = useState([]);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    searchPokemon(pokemonId);
-  }, [pokemonId]);
+    searchEvolutions(evoChainId);
+  }, [evoChainId]);
 
   /* Functions used to retreive names and images.
   The images come from a different url. */
-  const searchPokemon = async (id) => {
+  const searchEvolutions = async (id) => {
     try {
       const response = await fetch(
         `https://pokeapi.co/api/v2/evolution-chain/${id}/`
@@ -32,16 +32,16 @@ const Evolutions = () => {
       let evolutionResults = [];
 
       let name = data.chain.species.name;
-      let image = await getPokemonImage(name);
+      let image = await getEvolutionImage(name);
       evolutionResults.push([name, image]);
 
       if (data.chain.evolves_to.length !== 0) {
         let nameEvo2 = data.chain.evolves_to[0].species.name;
-        let imageEvo2 = await getPokemonImage(nameEvo2);
+        let imageEvo2 = await getEvolutionImage(nameEvo2);
         evolutionResults.push([nameEvo2, imageEvo2]);
         if (data.chain.evolves_to[0].evolves_to.length !== 0) {
           let nameEvo3 = data.chain.evolves_to[0].evolves_to[0].species.name;
-          let imageEvo3 = await getPokemonImage(nameEvo3);
+          let imageEvo3 = await getEvolutionImage(nameEvo3);
           evolutionResults.push([nameEvo3, imageEvo3]);
         }
       }
@@ -49,11 +49,10 @@ const Evolutions = () => {
       setError(false);
     } catch (err) {
       setError(true);
-      console.log("Evolution Chain Not Found");
     }
   };
 
-  const getPokemonImage = async (name) => {
+  const getEvolutionImage = async (name) => {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`);
     const data = await response.json();
     return data.sprites.other.home.front_default;
@@ -61,11 +60,15 @@ const Evolutions = () => {
 
   //Button functions
   const showPreviousPkmn = () => {
-    pokemonId == 1 ? setPokemonId(399) : setPokemonId(Number(pokemonId) - 1);
+    evoChainId == 1
+      ? setEvoChainId(399)
+      : setEvoChainId(Number(evoChainId) - 1);
   };
 
   const showNextPkmn = () => {
-    pokemonId == 399 ? setPokemonId(1) : setPokemonId(Number(pokemonId) + 1);
+    evoChainId == 399
+      ? setEvoChainId(1)
+      : setEvoChainId(Number(evoChainId) + 1);
   };
 
   //Search function
@@ -73,9 +76,7 @@ const Evolutions = () => {
     if (e.target.value !== null) {
       const limit = 3; //Max length wanted for the number field
       e.target.value = e.target.value.slice(0, limit);
-      setPokemonId(e.target.value.slice(0, limit));
-    } else if (e.target.value === NaN) {
-      console.log("El campo fue borrado"); //Fix pending
+      setEvoChainId(e.target.value.slice(0, limit));
     }
   };
 
@@ -87,7 +88,7 @@ const Evolutions = () => {
         <p>
           Showing Evolution Chain{" "}
           <span className="font-bold text-violet-700 text-base sm:text-base md:text-lg lg:text-xl xl:text-2xl">
-            # {pokemonId}
+            # {evoChainId}
           </span>
         </p>
 
@@ -97,11 +98,11 @@ const Evolutions = () => {
 
           <div className="flex flex-col sm:flex-row w-[80%] justify-center items-center gap-3 xl:gap-12">
             {error === false ? (
-              evoResults.map((pkmn) => (
+              evoResults.map((evo) => (
                 <EvoCard
-                  key={`pkmn-${pkmn[0]}`}
-                  cardTitle={pkmn[0]}
-                  cardImage={pkmn[1]}
+                  key={`evo-${evo[0]}`}
+                  cardTitle={evo[0]}
+                  cardImage={evo[1]}
                 />
               ))
             ) : (
