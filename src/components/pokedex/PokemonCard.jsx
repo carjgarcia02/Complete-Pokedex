@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Rainbow from "../../images/rainbow-bg.gif";
+import { colors } from "../../pokemonData/pokemonTypes";
 
 const PokemonCard = ({ id, name, image, typesArray }) => {
   const [showShiny, setShowShiny] = useState(false);
@@ -8,30 +9,9 @@ const PokemonCard = ({ id, name, image, typesArray }) => {
     setShowShiny(!showShiny);
   };
 
-  const colors = {
-    NORMAL: "#bbbbb0",
-    GRASS: "#89d750",
-    FIRE: "#fb5441",
-    WATER: "#59abf9",
-    FIGHTING: "#a55746",
-    FLYING: "#7a9ef5",
-    POISON: "#965891",
-    GROUND: "#dba561",
-    ROCK: "#cebe73",
-    BUG: "#c1d020",
-    GHOST: "#7770ce",
-    ELECTRIC: "#f8d407",
-    PSYCHIC: "#fb64b4",
-    ICE: "#95f1fe",
-    DRAGON: "#8975f2",
-    DARK: "#8c6753",
-    STEEL: "#c4c2da",
-    FAIRY: "#f8adff",
-  };
-
   return (
     <article
-      className={`flex flex-col justify-center items-center bg-slate-800 w-[130px] h-[180px] sm:w-[160px] sm:h-[230px] md:w-[200px] md:h-[280px] lg:w-[240px] lg:h-[320px] mt-4 mb-4 sm:p-4 md:p-8 font-Play font-bold text-white border-8 rounded-xl shadow-lg relative transition sm:hover:-translate-y-4`}
+      className={`flex flex-col justify-center items-center bg-slate-800 w-[130px] h-[210px] sm:w-[160px] sm:h-[230px] md:w-[200px] md:h-[280px] lg:w-[240px] lg:h-[320px] mt-4 mb-4 sm:p-4 md:p-8 font-Play font-bold text-white border-8 rounded-xl shadow-lg relative transition sm:hover:-translate-y-4`}
       style={{ borderColor: colors[`${typesArray[0]}`] }}
     >
       {/* Pokémon ID */}

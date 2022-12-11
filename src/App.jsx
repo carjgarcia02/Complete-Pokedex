@@ -9,7 +9,7 @@ import { Navigate, Routes, Route } from "react-router-dom";
 
 const App = () => {
   return (
-    <div>
+    <>
       <Navigation />
       <main className="flex">
         <Routes>
@@ -19,7 +19,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-    </div>
+    </>
   );
 };
 
