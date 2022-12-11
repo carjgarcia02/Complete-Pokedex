@@ -17,55 +17,68 @@ const Pokedex = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    searchAllPokemons();
+  }, []);
+
+  useEffect(() => {
     searchPokemons(pkmnShown);
   }, [pkmnShown]);
 
-  const searchPokemons = async (limit = 100000) => {
+  const searchPokemons = async (pkmnShown) => {
     const initialURL = "https://pokeapi.co/api/v2/";
-    const responseAll = await fetch(
-      `${initialURL}pokemon/?offset=${offset}&limit=${limit}`
-    );
     const response50 = await fetch(
       `${initialURL}pokemon/?offset=${offset}&limit=${pkmnShown}`
     );
-    const AllPokemonData = await responseAll.json();
+
     const PokemonData50 = await response50.json();
 
     /*The first API call only brings a name and a URL for each Pokémon.
     These results are used to make a 2nd call to each one of the URLs,
     the data is stored inside an array of promises named "promises" */
-    const promisesAll = AllPokemonData.results.map(async (pokemon) => {
-      const response = await fetch(pokemon.url);
-      const data = await response.json();
-      return data;
-    });
-
     const promises50 = PokemonData50.results.map(async (pokemon) => {
       const response = await fetch(pokemon.url);
       const data = await response.json();
       return data;
     });
 
-    const PokemonFull = await Promise.all(promisesAll);
     const Pokemon50 = await Promise.all(promises50);
     setPokemons(Pokemon50);
+  };
+
+  const searchAllPokemons = async (limit = 100000) => {
+    const initialURL = "https://pokeapi.co/api/v2/";
+    const responseAll = await fetch(
+      `${initialURL}pokemon/?offset=${offset}&limit=${limit}`
+    );
+    const AllPokemonData = await responseAll.json();
+
+    const promisesAll = AllPokemonData.results.map(async (pokemon) => {
+      const response = await fetch(pokemon.url);
+      const data = await response.json();
+      return data;
+    });
+
+    const PokemonFull = await Promise.all(promisesAll);
     setAllPokemons(PokemonFull);
-    console.log("TERMINADO!");
   };
 
   /* Searchbar functions*/
   const handleChange = (e) => {
-    if (e.target.value != "") {
+    if (e.target.value.length > 0) {
       setSearch(e.target.value);
-    } else {
-      searchPokemons();
+      filterPokemon(e.target.value);
+      console.log(e.target.value);
+    } else if (e.target.value.length === 0) {
+      setSearch(e.target.value);
+      searchPokemons(pkmnShown);
+      console.log(`valor: ${e.target.value}`);
     }
   };
 
   const filterPokemon = (searchTerm) => {
     let foundPkmn = allPokemons.filter((pokemon) => {
       if (
-        pokemon.id.toString() == searchTerm ||
+        pokemon.id.toString() === searchTerm ||
         pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
       ) {
         return pokemon;
@@ -74,14 +87,16 @@ const Pokedex = () => {
     setPokemons(foundPkmn);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleChange(e);
-    filterPokemon(search);
+  const showMorePokemons = () => {
+    setPkmnShown((pkmnShown) => pkmnShown + 50);
+    console.log(allPokemons.length);
   };
 
-  const loadMorePokemons = () => {
-    setPkmnShown((pkmnShown) => pkmnShown + 50);
+  const showLessPokemons = () => {
+    if (pkmnShown > 50) {
+      setPkmnShown((pkmnShown) => pkmnShown - 50);
+      console.log(allPokemons.length);
+    }
   };
 
   return (
@@ -89,11 +104,12 @@ const Pokedex = () => {
       {/* Pokédex header */}
       <header className="flex m-auto mb-4 justify-between items-center">
         {/* Pokémon searchbar */}
-        <form onSubmit={handleSubmit} className="flex m-auto justify-center">
+        <div className="flex m-auto justify-center">
           <input
             type="text"
             className="border-2 text-sm sm:text-lg px-2 py-1 rounded-lg focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            placeholder="Find Pokémon by name or id"
+            placeholder="Find pokémon by name or id"
+            value={search}
             onChange={handleChange}
           />
           <button
@@ -102,7 +118,7 @@ const Pokedex = () => {
           >
             <BiSearch />
           </button>
-        </form>
+        </div>
       </header>
 
       {/* Main section */}
@@ -160,9 +176,15 @@ const Pokedex = () => {
       <div className="flex select-none">
         <button
           className="m-auto text-sm lg:text-lg px-6 py-3 mb-4 bg-violet-500 text-white rounded-full hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-300"
-          onClick={loadMorePokemons}
+          onClick={showMorePokemons}
         >
-          Load 50 more
+          Load 100 more
+        </button>
+        <button
+          className="m-auto text-sm lg:text-lg px-6 py-3 mb-4 bg-violet-500 text-white rounded-full hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-300"
+          onClick={showLessPokemons}
+        >
+          Hide last 100
         </button>
       </div>
     </div>
