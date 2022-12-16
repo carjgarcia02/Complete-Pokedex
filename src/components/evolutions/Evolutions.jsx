@@ -82,7 +82,7 @@ const Evolutions = () => {
 
   return (
     <>
-      <div className="flex flex-col w-full h-full sm:h-screen justify-between items-center mt-6 mb-6 p-6 bg-no-repeat bg-bottom font-Patrick select-none">
+      <div className="flex flex-col w-full h-full sm:h-screen justify-between items-center mt-6 mb-6 p-6 bg-no-repeat bg-bottom font-Patrick select-none bg-neutral-800 text-white">
         {/* Header message */}
         <EvoHeader />
         <p>

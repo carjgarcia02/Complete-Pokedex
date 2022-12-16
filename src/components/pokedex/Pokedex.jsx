@@ -13,8 +13,28 @@ const Pokedex = () => {
   const [pokemons, setPokemons] = useState([]);
   const [allPokemons, setAllPokemons] = useState([]);
   const [pkmnShown, setPkmnShown] = useState(50);
-  const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState("");
+  const [typeSelected, setTypeSelected] = useState({
+    normal: false,
+    grass: false,
+    fire: false,
+    water: false,
+    fighting: false,
+    flying: false,
+    poison: false,
+    ground: false,
+    rock: false,
+    bug: false,
+    ghost: false,
+    electric: false,
+    psychic: false,
+    ice: false,
+    dragon: false,
+    dark: false,
+    steel: false,
+    fairy: false,
+  });
+  const [typesFiltered, setTypesFiltered] = useState([]);
 
   useEffect(() => {
     searchAllPokemons();
@@ -24,10 +44,18 @@ const Pokedex = () => {
     searchPokemons(pkmnShown);
   }, [pkmnShown]);
 
+  useEffect(() => {
+    if (Object.values(typeSelected).every((value) => value === false)) {
+      searchPokemons(pkmnShown);
+    } else {
+      setPokemons(typesFiltered);
+    }
+  }, [typeSelected]);
+
   const searchPokemons = async (pkmnShown) => {
     const initialURL = "https://pokeapi.co/api/v2/";
     const response50 = await fetch(
-      `${initialURL}pokemon/?offset=${offset}&limit=${pkmnShown}`
+      `${initialURL}pokemon/?offset=${0}&limit=${pkmnShown}`
     );
 
     const PokemonData50 = await response50.json();
@@ -48,7 +76,7 @@ const Pokedex = () => {
   const searchAllPokemons = async (limit = 100000) => {
     const initialURL = "https://pokeapi.co/api/v2/";
     const responseAll = await fetch(
-      `${initialURL}pokemon/?offset=${offset}&limit=${limit}`
+      `${initialURL}pokemon/?offset=${0}&limit=${limit}`
     );
     const AllPokemonData = await responseAll.json();
 
@@ -67,11 +95,9 @@ const Pokedex = () => {
     if (e.target.value.length > 0) {
       setSearch(e.target.value);
       filterPokemon(e.target.value);
-      console.log(e.target.value);
     } else if (e.target.value.length === 0) {
       setSearch(e.target.value);
       searchPokemons(pkmnShown);
-      console.log(`valor: ${e.target.value}`);
     }
   };
 
@@ -89,13 +115,30 @@ const Pokedex = () => {
 
   const showMorePokemons = () => {
     setPkmnShown((pkmnShown) => pkmnShown + 50);
-    console.log(allPokemons.length);
   };
 
   const showLessPokemons = () => {
     if (pkmnShown > 50) {
       setPkmnShown((pkmnShown) => pkmnShown - 50);
-      console.log(allPokemons.length);
+    }
+  };
+
+  const handleCheckbox = (e) => {
+    setTypeSelected({
+      ...typeSelected,
+      [e.target.value]: e.target.checked,
+    });
+
+    if (e.target.checked) {
+      const typesResult = allPokemons.filter(
+        (pokemon) => pokemon.types[0].type.name === e.target.value
+      );
+      setTypesFiltered([...typesFiltered, ...typesResult]);
+    } else {
+      const typesResult = typesFiltered.filter(
+        (pokemon) => pokemon.types[0].type.name !== e.target.value
+      );
+      setTypesFiltered([...typesResult]);
     }
   };
 
@@ -103,6 +146,15 @@ const Pokedex = () => {
     <div className="w-full h-screen px-2 py-4 font-Patrick">
       {/* Pokédex header */}
       <header className="flex m-auto mb-4 justify-between items-center">
+        <button
+          onClick={() =>
+            console.log(
+              Object.values(typeSelected).every((value) => value === false)
+            )
+          }
+        >
+          PRINT POKEMON
+        </button>
         {/* Pokémon searchbar */}
         <div className="flex m-auto justify-center">
           <input
@@ -126,7 +178,7 @@ const Pokedex = () => {
         {/* Filter bar */}
         <div className="p-2 border-2 rounded-md shadow-lg h-fit">
           <h2 className="text-center font-bold mb-3 md:text-lg">
-            Filter pokémon by type:
+            Filter by main type:
           </h2>
           <div className="flex flex-wrap 2xl:flex-col justify-center gap-2 ">
             {types.map((type) => (
@@ -134,6 +186,7 @@ const Pokedex = () => {
                 key={`type-${type.type}`}
                 typeName={type.type}
                 background={type.bg}
+                onChange={handleCheckbox}
               />
             ))}
           </div>
@@ -178,13 +231,13 @@ const Pokedex = () => {
           className="m-auto text-sm lg:text-lg px-6 py-3 mb-4 bg-violet-500 text-white rounded-full hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-300"
           onClick={showMorePokemons}
         >
-          Load 100 more
+          Load 50 more
         </button>
         <button
           className="m-auto text-sm lg:text-lg px-6 py-3 mb-4 bg-violet-500 text-white rounded-full hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-300"
           onClick={showLessPokemons}
         >
-          Hide last 100
+          Hide last 50
         </button>
       </div>
     </div>
