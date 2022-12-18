@@ -2,14 +2,8 @@
 import Searchbar from "./SearchBar";
 import Filters from "./Filters";
 import PokemonCard from "./PokemonCard";
-//Hooks
-import { useState, useEffect } from "react";
-//Icons
-import { BiSearch } from "react-icons/bi";
-//Pokemon Types
-/* import { types } from "../../pokemonData/pokemonTypes"; */
 //Context
-import { usePokedexContext } from "../../context/GlobalDataProvider";
+import { usePokedexContext } from "../../context/PokedexProvider";
 
 const Pokedex = () => {
   const {
@@ -20,7 +14,6 @@ const Pokedex = () => {
     showMorePokemons,
     handleCheckbox,
     types,
-    checked,
   } = usePokedexContext();
 
   return (
@@ -28,21 +21,7 @@ const Pokedex = () => {
       {/* Pokédex header */}
       <header className="flex m-auto mb-4 justify-between items-center">
         {/* Pokémon searchbar */}
-        <div className="flex m-auto justify-center">
-          <input
-            type="text"
-            className="border-2 text-sm sm:text-lg px-2 py-1 rounded-lg focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            placeholder="Find pokémon by name or id"
-            value={search}
-            onChange={handleChange}
-          />
-          <button
-            type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white text-sm sm:text-xl px-2 py-2 rounded-md clic md:bg-red-600 md:hover:bg-red-900 xl:bg-blue-600"
-          >
-            <BiSearch />
-          </button>
-        </div>
+        <Searchbar value={search} onChange={handleChange} />
       </header>
 
       {/* Main section */}
@@ -59,7 +38,6 @@ const Pokedex = () => {
                 typeName={type.type}
                 background={type.bg}
                 onChange={handleCheckbox}
-                checked={checked}
               />
             ))}
           </div>

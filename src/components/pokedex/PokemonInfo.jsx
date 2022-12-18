@@ -1,4 +1,4 @@
-import { usePokedexContext } from "../../context/GlobalDataProvider";
+import { usePokedexContext } from "../../context/PokedexProvider";
 
 const PokemonInfo = ({}) => {
   const { modalVisibility, toggleModal } = usePokedexContext();

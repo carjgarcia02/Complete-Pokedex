@@ -1,12 +1,11 @@
 import { React, useState, useContext } from "react";
-import { usePokedexContext } from "../../context/GlobalDataProvider";
+import { usePokedexContext } from "../../context/PokedexProvider";
 import Rainbow from "../../images/rainbow-bg.gif";
 import { colors } from "../../pokemonData/pokemonTypes";
 import PokemonInfo from "./PokemonInfo";
 
 const PokemonCard = ({ id, name, image, typesArray }) => {
   const [showShiny, setShowShiny] = useState(false);
-  /* const [testValue, testArray, testObject, changeTestValue, printTestValue] = usePokedexContext(); */
   const { toggleModal } = usePokedexContext();
 
   const handleShiny = () => {
@@ -22,8 +21,6 @@ const PokemonCard = ({ id, name, image, typesArray }) => {
         {/* Pokémon ID */}
         <div className="flex justify-center items-center h-6 md:h-8 md:w-18 text-xs sm:text-xs md:text-base absolute top-0 md:top-1 left-2">
           <h4>{`No. ${id}`}</h4>
-          {/* <button onClick={changeTestValue}>VALUE</button>
-          <button onClick={printTestValue}>ARRAY</button> */}
         </div>
         {/* Shiny Button */}
         <img

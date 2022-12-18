@@ -1,6 +1,3 @@
-import React from "react";
-import { usePokedexContext } from "../../context/GlobalDataProvider";
-
 const Filters = ({ typeName, background, onChange, checked }) => {
   return (
     <div

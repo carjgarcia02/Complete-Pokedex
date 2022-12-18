@@ -1,23 +1,17 @@
+// Hooks
 import { useState, useEffect, useContext, createContext } from "react";
 //Pokemon Types
 import { types } from "../pokemonData/pokemonTypes";
 
-/* Defined 2 contexts to handle data for pokédex and evolutions accordingly */
 const pokedexContext = createContext();
-const evoContext = createContext();
 
-/* Custom hooks that let you use context without importing them */
+/* Custom hook that let you use context without importing them */
 export function usePokedexContext() {
   return useContext(pokedexContext);
 }
 
-export function useEvoContext() {
-  return useContext(evoContext);
-}
-
-export function GlobalDataProvider({ children }) {
-  /* Pokédex main states*/
-
+export function PokedexProvider({ children }) {
+  /* Pokédex states*/
   const [pokemons, setPokemons] = useState([]);
   const [allPokemons, setAllPokemons] = useState([]);
   const [search, setSearch] = useState("");
@@ -44,34 +38,6 @@ export function GlobalDataProvider({ children }) {
     steel: false,
     fairy: false,
   });
-
-  {
-    /* A dummy object used for unchecking all the selection filters
- whenever the "Load 50 more" and "Hide last 50" buttons are used.
- TypeSelected state is set to dummyTypeSelected.
- Then, TypeFiltersEmpty state is set to true.*/
-  }
-  const dummyTypeSelected = {
-    ...typeSelected,
-    normal: false,
-    grass: false,
-    fire: false,
-    water: false,
-    fighting: false,
-    flying: false,
-    poison: false,
-    ground: false,
-    rock: false,
-    bug: false,
-    ghost: false,
-    electric: false,
-    psychic: false,
-    ice: false,
-    dragon: false,
-    dark: false,
-    steel: false,
-    fairy: false,
-  };
 
   useEffect(() => {
     searchAllPokemons();
@@ -180,12 +146,16 @@ export function GlobalDataProvider({ children }) {
   };
 
   const showMorePokemons = () => {
-    setPkmnShown((pkmnShown) => pkmnShown + 50);
+    if (Object.values(typeSelected).every((value) => value === false)) {
+      setPkmnShown((pkmnShown) => pkmnShown + 50);
+    }
   };
 
   const showLessPokemons = () => {
-    if (pkmnShown > 50) {
-      setPkmnShown((pkmnShown) => pkmnShown - 50);
+    if (Object.values(typeSelected).every((value) => value === false)) {
+      if (pkmnShown > 50) {
+        setPkmnShown((pkmnShown) => pkmnShown - 50);
+      }
     }
   };
 
@@ -195,36 +165,21 @@ export function GlobalDataProvider({ children }) {
       : setModalVisibility("hidden");
   };
 
-  const [testValue, setTestValue] = useState(18);
-
   return (
     <pokedexContext.Provider
       value={{
         pokemons,
-        setPokemons,
-        allPokemons,
-        setAllPokemons,
         search,
-        setSearch,
-        pkmnShown,
-        setPkmnShown,
-        typeSelected,
-        setTypeSelected,
-        typesFiltered,
-        setTypesFiltered,
-        searchPokemons,
-        searchAllPokemons,
         handleChange,
-        filterPokemon,
         showLessPokemons,
         showMorePokemons,
         handleCheckbox,
+        types,
         modalVisibility,
         toggleModal,
-        types,
       }}
     >
-      <evoContext.Provider value={testValue}>{children}</evoContext.Provider>
+      {children}
     </pokedexContext.Provider>
   );
 }
