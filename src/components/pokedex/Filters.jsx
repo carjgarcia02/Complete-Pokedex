@@ -1,6 +1,7 @@
 import React from "react";
+import { usePokedexContext } from "../../context/GlobalDataProvider";
 
-const Filters = ({ typeName, background, onChange }) => {
+const Filters = ({ typeName, background, onChange, checked }) => {
   return (
     <div
       className="inline-block px-2 py-1 rounded-md"
@@ -12,6 +13,7 @@ const Filters = ({ typeName, background, onChange }) => {
         id={typeName}
         value={typeName}
         onChange={onChange}
+        checked={checked}
       />
       <label
         className="text-white text-xs sm:text-sm md:text-base lg:text-lg"
