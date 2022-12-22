@@ -1,3 +1,4 @@
+/* An object used to declare and stylize pokemon types inside each card. */
 export const colors = {
   NORMAL: "#bbbbb0",
   GRASS: "#89d750",
@@ -19,6 +20,7 @@ export const colors = {
   FAIRY: "#f8adff",
 };
 
+/* Used for styling the filters section */
 export const types = [
   { type: "normal", bg: "#bbbbb0" },
   { type: "grass", bg: "#89d750" },

@@ -13,7 +13,7 @@ const Filters = ({ typeName, background, onChange, checked }) => {
         checked={checked}
       />
       <label
-        className="text-white text-xs sm:text-sm md:text-base lg:text-lg"
+        className="text-white text-xs sm:text-sm md:text-base lg:text-lg hover:cursor-pointer"
         htmlFor={typeName}
       >
         {" "}

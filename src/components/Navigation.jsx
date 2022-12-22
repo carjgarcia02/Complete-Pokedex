@@ -1,33 +1,35 @@
+// Navigation links
 import { NavLink } from "react-router-dom";
-//Navigation images
+// Navigation images
 import Pokedex from "../images/pokedex.svg";
-import Logo from "../images/logo.jpg";
+import Logo from "../images/latios-latias.png";
 import Evolutions from "../images/evolutions.png";
 
 const Navigation = () => {
   return (
-    <nav className="w-full flex justify-around py-6 border-b-2 shadow-lg select-none">
+    <nav className="w-full bg-gray-900 flex items-center justify-around py-6 select-none">
       <NavLink
-        className="flex w-1/4 text-center justify-center items-center scale-150 hover:scale-150 transition duration-300"
+        className="flex w-1/4 text-center justify-center items-center sm:scale-110 lg:scale-125 transition duration-200"
         style={({ isActive }) => ({
-          transform: isActive ? "scale(1.50)" : "scale(1.0)",
+          transform: isActive ? "scale(1.25)" : "scale(1.0)",
         })}
         to="/pokedex"
       >
-        <img className="h-10" src={Pokedex} alt="" />
+        <img className="h-10" src={Pokedex} alt="Pokedex logo" />
       </NavLink>
 
       <div>
-        <img className="h-20 w-full" src={Logo} alt="Nav Main Logo" />
+        <img className="h-24 w-full" src={Logo} alt="Nav main logo" />
       </div>
+
       <NavLink
-        className="flex w-1/4 text-center justify-center items-center hover:scale-150 transition duration-300"
+        className="flex w-1/4 text-center justify-center items-center sm:scale-110 lg:scale-125 transition duration-200"
         style={({ isActive }) => ({
-          transform: isActive ? "scale(1.50)" : "scale(1.0)",
+          transform: isActive ? "scale(1.25)" : "scale(1.0)",
         })}
         to="/evolutions"
       >
-        <img className="h-14" src={Evolutions} alt="" />
+        <img className="h-14" src={Evolutions} alt="Evolutions logo" />
       </NavLink>
     </nav>
   );

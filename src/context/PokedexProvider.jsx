@@ -1,7 +1,7 @@
 // Hooks
 import { useState, useEffect, useContext, createContext } from "react";
-//Pokemon Types
-import { types } from "../pokemonData/pokemonTypes";
+// Pokemon Types
+import { colors, types } from "../pokemonData/pokemonTypes";
 
 const pokedexContext = createContext();
 
@@ -14,9 +14,9 @@ export function PokedexProvider({ children }) {
   /* Pokédex states*/
   const [pokemons, setPokemons] = useState([]);
   const [allPokemons, setAllPokemons] = useState([]);
+  const [idSelected, setIdSelected] = useState(1);
   const [search, setSearch] = useState("");
   const [pkmnShown, setPkmnShown] = useState(50);
-  const [modalVisibility, setModalVisibility] = useState("hidden");
   const [typesFiltered, setTypesFiltered] = useState([]);
   const [typeSelected, setTypeSelected] = useState({
     normal: false,
@@ -78,6 +78,7 @@ export function PokedexProvider({ children }) {
     setPokemons(Pokemon50);
   };
 
+  /* Pokeapi search */
   const searchAllPokemons = async (limit = 100000) => {
     const initialURL = "https://pokeapi.co/api/v2/";
     const responseAll = await fetch(
@@ -145,6 +146,7 @@ export function PokedexProvider({ children }) {
     }
   };
 
+  /* Display 50 more/less pkmn */
   const showMorePokemons = () => {
     if (Object.values(typeSelected).every((value) => value === false)) {
       setPkmnShown((pkmnShown) => pkmnShown + 50);
@@ -159,24 +161,19 @@ export function PokedexProvider({ children }) {
     }
   };
 
-  const toggleModal = () => {
-    modalVisibility === "hidden"
-      ? setModalVisibility("visible")
-      : setModalVisibility("hidden");
-  };
-
   return (
     <pokedexContext.Provider
       value={{
         pokemons,
         search,
         handleChange,
-        showLessPokemons,
-        showMorePokemons,
         handleCheckbox,
         types,
-        modalVisibility,
-        toggleModal,
+        colors,
+        idSelected,
+        setIdSelected,
+        showLessPokemons,
+        showMorePokemons,
       }}
     >
       {children}

@@ -1,12 +1,13 @@
-import { React, useState, useContext } from "react";
 import { usePokedexContext } from "../../context/PokedexProvider";
+import { NavLink } from "react-router-dom";
 import Rainbow from "../../images/rainbow-bg.gif";
 import { colors } from "../../pokemonData/pokemonTypes";
-import PokemonInfo from "./PokemonInfo";
+import { useState } from "react";
 
 const PokemonCard = ({ id, name, image, typesArray }) => {
+  const { setIdSelected } = usePokedexContext();
+
   const [showShiny, setShowShiny] = useState(false);
-  const { toggleModal } = usePokedexContext();
 
   const handleShiny = () => {
     setShowShiny(!showShiny);
@@ -15,7 +16,7 @@ const PokemonCard = ({ id, name, image, typesArray }) => {
   return (
     <>
       <article
-        className={`flex flex-col justify-center items-center bg-slate-800 w-[130px] h-[210px] sm:w-[160px] sm:h-[230px] md:w-[200px] md:h-[280px] lg:w-[240px] lg:h-[320px] mt-4 mb-4 sm:p-4 md:p-8 font-Play font-bold text-white border-8 rounded-xl shadow-lg relative transition sm:hover:-translate-y-4`}
+        className={`flex flex-col justify-center items-center bg-gray-900 w-[130px] h-[210px] sm:w-[160px] sm:h-[230px] md:w-[200px] md:h-[280px] lg:w-[240px] lg:h-[320px] mt-4 mb-4 sm:p-4 md:p-8 font-Play font-bold text-white border-8 rounded-xl shadow-lg relative transition sm:hover:-translate-y-4`}
         style={{ borderColor: colors[`${typesArray[0]}`] }}
       >
         {/* Pokémon ID */}
@@ -34,13 +35,14 @@ const PokemonCard = ({ id, name, image, typesArray }) => {
         {/* Pokemon Name and Image */}
         <div className="flex flex-col text-center justify-center items-center -mt-7">
           <h3 className="text-xs sm:text-sm md:text-base lg:text-lg">{name}</h3>
-
-          <img
-            className="w-[70%] sm:w-[85%] md:w-full"
-            src={image[Number(showShiny)]}
-            alt="Not Found"
-            onClick={toggleModal}
-          />
+          <NavLink to="/details">
+            <img
+              className="w-[70%] sm:w-[85%] md:w-full hover:cursor-pointer m-auto"
+              src={image[Number(showShiny)]}
+              alt="Not Found"
+              onClick={() => setIdSelected(id)}
+            />
+          </NavLink>
         </div>
 
         {/* Pokemon Types */}
