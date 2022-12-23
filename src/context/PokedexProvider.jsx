@@ -5,18 +5,22 @@ import { colors, types } from "../pokemonData/pokemonTypes";
 
 const pokedexContext = createContext();
 
-/* Custom hook that let you use context without importing them */
-export function usePokedexContext() {
+/* Custom hook that lets you use context without importing them */
+export const usePokedexContext = () => {
   return useContext(pokedexContext);
-}
+};
 
-export function PokedexProvider({ children }) {
+export const PokedexProvider = ({ children }) => {
   /* Pokédex states*/
   const [pokemons, setPokemons] = useState([]);
   const [allPokemons, setAllPokemons] = useState([]);
-  const [idSelected, setIdSelected] = useState(1);
+  /* Clicking image and showing Details component */
+  const [pkmnSelected, setPkmnSelected] = useState(1);
+  /* Searchbar value */
   const [search, setSearch] = useState("");
+  /* Controls the buttons at the end of Pokédex */
   const [pkmnShown, setPkmnShown] = useState(50);
+  /* Filters */
   const [typesFiltered, setTypesFiltered] = useState([]);
   const [typeSelected, setTypeSelected] = useState({
     normal: false,
@@ -170,8 +174,8 @@ export function PokedexProvider({ children }) {
         handleCheckbox,
         types,
         colors,
-        idSelected,
-        setIdSelected,
+        pkmnSelected,
+        setPkmnSelected,
         showLessPokemons,
         showMorePokemons,
       }}
@@ -179,4 +183,4 @@ export function PokedexProvider({ children }) {
       {children}
     </pokedexContext.Provider>
   );
-}
+};

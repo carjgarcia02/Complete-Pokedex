@@ -7,7 +7,7 @@ import Evolutions from "../images/evolutions.png";
 
 const Navigation = () => {
   return (
-    <nav className="w-full bg-gray-900 flex items-center justify-around py-6 select-none">
+    <nav className="w-full bg-gradient-to-r from-[#8A2387] via-[#E94057] to-[#F27121] flex items-center justify-around py-6 select-none">
       <NavLink
         className="flex w-1/4 text-center justify-center items-center sm:scale-110 lg:scale-125 transition duration-200"
         style={({ isActive }) => ({

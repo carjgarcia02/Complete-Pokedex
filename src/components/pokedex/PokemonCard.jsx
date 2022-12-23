@@ -5,7 +5,7 @@ import { colors } from "../../pokemonData/pokemonTypes";
 import { useState } from "react";
 
 const PokemonCard = ({ id, name, image, typesArray }) => {
-  const { setIdSelected } = usePokedexContext();
+  const { setPkmnSelected } = usePokedexContext();
 
   const [showShiny, setShowShiny] = useState(false);
 
@@ -40,7 +40,9 @@ const PokemonCard = ({ id, name, image, typesArray }) => {
               className="w-[70%] sm:w-[85%] md:w-full hover:cursor-pointer m-auto"
               src={image[Number(showShiny)]}
               alt="Not Found"
-              onClick={() => setIdSelected(id)}
+              onClick={() =>
+                setPkmnSelected(name.toLowerCase())
+              } /* Name must be lowercase for fetching default and special forms. */
             />
           </NavLink>
         </div>

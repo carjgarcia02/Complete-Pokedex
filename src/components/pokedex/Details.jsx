@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { usePokedexContext } from "../../context/PokedexProvider";
 import { AiOutlineClose } from "react-icons/ai";
+import DetailsBg from "../../images/detailsBg.png";
 
 const Details = () => {
-  const { idSelected, setIdSelected, colors } = usePokedexContext();
+  const { pkmnSelected, setPkmnSelected, colors } = usePokedexContext();
   const [details, setDetails] = useState([]);
 
   useEffect(() => {
     fetchDetails();
-  }, [idSelected]);
+  }, [pkmnSelected]);
 
   /* The next 3 functions find and organize some info to be used in the modal */
   const findTypes = (data) => {
@@ -23,9 +24,21 @@ const Details = () => {
   const findAbilities = (data) => {
     let abilities = [];
     data.forEach((element) => {
-      abilities.push(element.ability.name);
+      let fixedAbility = formatAbility(element.ability.name);
+      abilities.push(fixedAbility);
     });
     return abilities;
+  };
+
+  const formatAbility = (ability) => {
+    /* Removes dashes and capitalizes ability names */
+    let ability_words = ability.replaceAll("-", " ").split(" ");
+    let upper_words = [];
+    for (let word of ability_words) {
+      upper_words.push(word[0].toUpperCase() + word.substring(1).toLowerCase());
+    }
+    const formattedAbility = upper_words.join(" ");
+    return formattedAbility;
   };
 
   const findStats = (data) => {
@@ -38,16 +51,21 @@ const Details = () => {
 
   /* And finally, modal info is set into the state whenever clicking a Pokémon's img */
   const fetchDetails = async () => {
-    const pkmnUrl = `https://pokeapi.co/api/v2/pokemon/${idSelected}`;
+    const pkmnUrl = `https://pokeapi.co/api/v2/pokemon/${pkmnSelected}`;
     const response = await fetch(pkmnUrl);
     const pkmnData = await response.json();
-
+    let altName = pkmnData.species.name;
     {
       /* Second fetch with Pokémon description */
     }
-    const descUrl = `https://pokeapi.co/api/v2/pokemon-species/${idSelected}`;
+    const descUrl = `https://pokeapi.co/api/v2/pokemon-species/${altName}`;
     const responseDesc = await fetch(descUrl);
     const descData = await responseDesc.json();
+    const descObject = descData.flavor_text_entries.find(
+      (desc) => desc.language.name === "en"
+    );
+    const description = descObject.flavor_text.replace("", " ");
+    /* Descriptions may vary their position inside the API. We used the find method to avoid unexpected languages */
 
     let pkmnInfo = [
       pkmnData.id,
@@ -55,7 +73,7 @@ const Details = () => {
       findTypes(pkmnData.types),
       pkmnData.height,
       pkmnData.weight,
-      descData.flavor_text_entries[2].flavor_text,
+      description,
       pkmnData.sprites.other["official-artwork"].front_default,
       findAbilities(pkmnData.abilities),
       findStats(pkmnData.stats),
@@ -64,22 +82,25 @@ const Details = () => {
   };
 
   return (
-    <article className="relative w-full h-screen flex-col justify-center items-center font-Play select-none">
+    <article
+      className="relative w-full h-full flex-col justify-center items-center font-Play select-none"
+      style={{ backgroundImage: `url(${DetailsBg})` }}
+    >
       {/* Header */}
-      <header className="flex h-1/6 justify-center items-center md:text-lg lg:text-xl xl:text-2xl">
-        <h1 className="text-center font-bold">POKÉMON DETAILS</h1>
+      <header className="flex h-1/6 justify-center items-center md:text-lg lg:text-xl xl:text-2xl py-12">
+        <h1 className="text-center text-white font-bold">POKÉMON DETAILS</h1>
         <NavLink title="Go Back to Pokédex" to="/pokedex">
-          <button className="absolute top-8 right-8 border-2 rounded-full p-2 bg-red-600 hover:bg-green-600">
+          <button className="absolute top-8 right-8 border-2 rounded-full p-1 bg-red-600 hover:bg-green-600">
             {<AiOutlineClose className="text-white" />}
           </button>
         </NavLink>
       </header>
       {/* Pokémon Details */}
-      <main className="w-full flex flex-col justify-between items-center px-4 sm:px-10">
+      <main className="w-full flex flex-col justify-between items-center p-4 sm:px-10">
         {/* Basic data and Bio */}
         <section className="w-full flex flex-col justify-between items-center text-xs gap-4 lg:gap-8 xl:gap-12">
           {/* Basic information */}
-          <div className="w-auto sm:text-base md:text-lg lg:text-xl xl:text-2xl border-2 rounded-xl overflow-hidden">
+          <div className="min-w-[200px] 2xl:w-1/6 sm:text-base md:text-lg lg:text-xl xl:text-2xl bg-white border-2 rounded-xl overflow-hidden">
             <h2 className="font-bold text-center bg-teal-600 text-white">
               Basic data:
             </h2>
@@ -120,14 +141,12 @@ const Details = () => {
             </div>
           </div>
           {/* Pokémon Description */}
-          <div className="sm:text-base md:text-lg lg:text-xl xl:text-2xl md:w-4/5 lg:w-3/5 border-2 rounded-xl overflow-hidden">
+          <div className="w-[70%] sm:w-[85%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] sm:text-base md:text-lg lg:text-xl xl:text-2xl bg-white border-2 rounded-xl overflow-hidden">
             <h2 className="font-bold text-center text-white bg-amber-900">
               Description:
             </h2>
             <div className="px-2 py-1">
-              <p className="text-justify">
-                {details[5] ? details[5].replace("", " ") : "N/A"}
-              </p>
+              <p className="text-justify">{details[5] ? details[5] : "N/A"}</p>
             </div>
           </div>
         </section>
@@ -143,11 +162,11 @@ const Details = () => {
 
         {/* Abilities and Stats */}
         <section className="w-full flex flex-col justify-between items-center text-xs gap-4 lg:gap-8 xl:gap-12 mb-4">
-          <div className="sm:text-base md:text-lg lg:text-xl xl:text-2xl border-2 rounded-xl overflow-hidden">
+          <div className="min-w-[200px] 2xl:w-1/6 sm:text-base md:text-lg lg:text-xl xl:text-2xl bg-white border-2 rounded-xl overflow-hidden">
             <h2 className="font-bold text-center text-white bg-rose-600">
               Abilities:
             </h2>
-            <div className="px-2 py-1">
+            <div className="text-center px-2 py-1">
               {details[7]?.map((ability) => (
                 <p key={`ability-${ability}`}>
                   {ability[0].toUpperCase() + ability.substring(1)}
@@ -156,25 +175,28 @@ const Details = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-4/5 lg:w-3/5 sm:text-base md:text-lg lg:text-xl xl:text-2xl border-2 rounded-xl overflow-hidden">
+          <div className="w-full sm:w-[85%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] sm:text-base md:text-lg lg:text-xl xl:text-2xl border-2 rounded-xl overflow-hidden">
             <h2 className="font-bold text-center text-white bg-indigo-600">
               Stats:
             </h2>
-            <div className="px-2 py-1">
+            <div className="px-2 py-1 bg-white">
               {details[8]?.map((stat) => (
                 <div
                   key={stat[0]}
                   className="flex justify-between items-center"
                 >
-                  <div className="w-4/12">
-                    <p className="font-bold">
+                  <div className="w-3/12">
+                    <p className="font-bold text-[9px] sm:text-[14px] lg:text-[16px]">
                       {stat[0].toUpperCase().replace("-", " ")}
                     </p>
                   </div>
                   <div className="w-7/12">
                     <div
                       className="h-2 sm:h-3 lg:h-4 bg-green-600"
-                      style={{ width: stat[1] > 100 ? "100%" : `${stat[1]}%` }}
+                      style={{
+                        width:
+                          stat[1] >= 150 ? "100%" : `${(stat[1] * 100) / 150}%`,
+                      }}
                     ></div>
                   </div>
                   <div className="w-1/12 text-center">
